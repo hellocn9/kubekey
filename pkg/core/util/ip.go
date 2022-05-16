@@ -120,18 +120,9 @@ func GetAvailableIPv6(ipAndMask string) []string {
 	fmt.Println(ipnet)
 
 	firstIP, _ := networkRangeIpv6(ipnet)
+	firstIP[len(firstIP)] = 1
 	fmt.Println(ipnet)
-	ipNum := ipToInt(firstIP)
-	size := networkSize(ipnet.Mask)
-	pos := int32(1)
-	max := size - 2 // -1 for the broadcast address, -1 for the gateway address
-
-	var newNum int32
-	for attempt := int32(0); attempt < max; attempt++ {
-		newNum = ipNum + pos
-		pos = pos%max + 1
-		availableIPs = append(availableIPs, intToIP(newNum).String())
-	}
+	availableIPs = append(availableIPs, firstIP.String())
 	return availableIPs
 }
 
