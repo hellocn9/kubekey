@@ -18,6 +18,7 @@ package util
 
 import (
 	"encoding/binary"
+	"fmt"
 	"github.com/kubesphere/kubekey/pkg/core/logger"
 	"github.com/pkg/errors"
 	"net"
@@ -42,6 +43,28 @@ func ParseIp(ip string) []string {
 	} else {
 		availableIPs = append(availableIPs, ip)
 	}
+	fmt.Println(availableIPs)
+	return availableIPs
+}
+
+func ParseIpv6(ip string) []string {
+	var availableIPs []string
+	// if ip is "1:1:1:1/",trim /
+	ip = strings.TrimRight(ip, "/")
+	if strings.Contains(ip, "/") == true {
+		if strings.Contains(ip, "/128") == true {
+			aip := strings.Replace(ip, "/128", "", -1)
+			availableIPs = append(availableIPs, aip)
+		} else {
+			availableIPs = GetAvailableIPv6(ip)
+		}
+	} else if strings.Contains(ip, "-") == true {
+		ipRange := strings.SplitN(ip, "-", 2)
+		availableIPs = GetAvailableIPRange(ipRange[0], ipRange[1])
+	} else {
+		availableIPs = append(availableIPs, ip)
+	}
+	fmt.Println(availableIPs)
 	return availableIPs
 }
 
@@ -74,6 +97,30 @@ func GetAvailableIP(ipAndMask string) []string {
 	_, ipnet, _ := net.ParseCIDR(ipAndMask)
 
 	firstIP, _ := networkRange(ipnet)
+	ipNum := ipToInt(firstIP)
+	size := networkSize(ipnet.Mask)
+	pos := int32(1)
+	max := size - 2 // -1 for the broadcast address, -1 for the gateway address
+
+	var newNum int32
+	for attempt := int32(0); attempt < max; attempt++ {
+		newNum = ipNum + pos
+		pos = pos%max + 1
+		availableIPs = append(availableIPs, intToIP(newNum).String())
+	}
+	return availableIPs
+}
+
+func GetAvailableIPv6(ipAndMask string) []string {
+	var availableIPs []string
+
+	ipAndMask = strings.TrimSpace(ipAndMask)
+	ipAndMask = IPAddressToCIDR(ipAndMask)
+	_, ipnet, _ := net.ParseCIDR(ipAndMask)
+	fmt.Println(ipnet)
+
+	firstIP, _ := networkRangeIpv6(ipnet)
+	fmt.Println(ipnet)
 	ipNum := ipToInt(firstIP)
 	size := networkSize(ipnet.Mask)
 	pos := int32(1)
@@ -122,6 +169,12 @@ func networkRange(network *net.IPNet) (net.IP, net.IP) {
 		lastIP[i] = netIP[i] | ^network.Mask[i]
 	}
 	return firstIP, lastIP
+}
+
+func networkRangeIpv6(network *net.IPNet) (net.IP, net.IP) {
+	netIP := network.IP.To16()
+	firstIP := netIP.Mask(network.Mask)
+	return firstIP, nil
 }
 
 func networkSize(mask net.IPMask) int32 {
