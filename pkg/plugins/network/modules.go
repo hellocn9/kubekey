@@ -18,6 +18,7 @@ package network
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
@@ -101,7 +102,7 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 			Template: templates.CalicoOld,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.CalicoOld.Name()),
 			Data: util.Data{
-				"KubePodsCIDR":           d.KubeConf.Cluster.Network.KubePodsCIDR,
+				"KubePodsCIDR":           strings.Split(d.KubeConf.Cluster.Network.KubePodsCIDR, ",")[0],
 				"CalicoCniImage":         images.GetImage(d.Runtime, d.KubeConf, "calico-cni").ImageName(),
 				"CalicoNodeImage":        images.GetImage(d.Runtime, d.KubeConf, "calico-node").ImageName(),
 				"CalicoFlexvolImage":     images.GetImage(d.Runtime, d.KubeConf, "calico-flexvol").ImageName(),
@@ -111,6 +112,8 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 				"NodeCidrMaskSize":       d.KubeConf.Cluster.Kubernetes.NodeCidrMaskSize,
 				"IPIPMode":               d.KubeConf.Cluster.Network.Calico.IPIPMode,
 				"VXLANMode":              d.KubeConf.Cluster.Network.Calico.VXLANMode,
+				"IPv6KubePodsCIDR":       strings.Split(d.KubeConf.Cluster.Network.KubePodsCIDR, ",")[1],
+				"IPv6NodeCidrMaskSize":   d.KubeConf.Cluster.Kubernetes.IPv6NodeCidrMaskSize,
 			},
 		},
 		Parallel: true,
@@ -128,7 +131,7 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 			Template: templates.CalicoNew,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.CalicoNew.Name()),
 			Data: util.Data{
-				"KubePodsCIDR":            d.KubeConf.Cluster.Network.KubePodsCIDR,
+				"KubePodsCIDR":            strings.Split(d.KubeConf.Cluster.Network.KubePodsCIDR, ",")[0],
 				"CalicoCniImage":          images.GetImage(d.Runtime, d.KubeConf, "calico-cni").ImageName(),
 				"CalicoNodeImage":         images.GetImage(d.Runtime, d.KubeConf, "calico-node").ImageName(),
 				"CalicoFlexvolImage":      images.GetImage(d.Runtime, d.KubeConf, "calico-flexvol").ImageName(),
@@ -140,6 +143,8 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 				"IPIPMode":                d.KubeConf.Cluster.Network.Calico.IPIPMode,
 				"VXLANMode":               d.KubeConf.Cluster.Network.Calico.VXLANMode,
 				"ConatinerManagerIsIsula": d.KubeConf.Cluster.Kubernetes.ContainerManager == "isula",
+				"IPv6KubePodsCIDR":        strings.Split(d.KubeConf.Cluster.Network.KubePodsCIDR, ",")[1],
+				"IPv6NodeCidrMaskSize":    d.KubeConf.Cluster.Kubernetes.IPv6NodeCidrMaskSize,
 			},
 		},
 		Parallel: true,

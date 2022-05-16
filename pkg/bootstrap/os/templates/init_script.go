@@ -69,6 +69,8 @@ echo 'vm.swappiness = 1' >> /etc/sysctl.conf
 echo 'fs.inotify.max_user_instances = 524288' >> /etc/sysctl.conf
 echo 'kernel.pid_max = 65535' >> /etc/sysctl.conf
 
+echo 'net.ipv6.conf.all.forwarding=1' >> /etc/sysctl.conf
+
 
 #See https://imroc.io/posts/kubernetes/troubleshooting-with-kubernetes-network/
 sed -r -i "s@#{0,}?net.ipv4.tcp_tw_recycle ?= ?(0|1)@net.ipv4.tcp_tw_recycle = 0@g" /etc/sysctl.conf

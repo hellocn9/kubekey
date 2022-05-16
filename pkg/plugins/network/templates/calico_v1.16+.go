@@ -58,6 +58,8 @@ data:
           "mtu": __CNI_MTU__,
           "ipam": {
               "type": "calico-ipam"
+              "assign_ipv4": "true",
+              "assign_ipv6": "true"
           },
           "policy": {
               "type": "k8s"
@@ -4027,6 +4029,8 @@ spec:
               value: "can-reach=$(NODEIP)"
             - name: IP
               value: "autodetect"
+            - name: IP6
+              value: "autodetect"
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
               value: "{{ .IPIPMode }}"
@@ -4058,6 +4062,10 @@ spec:
               value: "{{ .KubePodsCIDR }}"
             - name: CALICO_IPV4POOL_BLOCK_SIZE
               value: "{{ .NodeCidrMaskSize }}"
+            - name: CALICO_IPV6POOL_CIDR
+              value: "{{ .IPv6KubePodsCIDR }}"
+            - name: CALICO_IPV6POOL_BLOCK_SIZE
+              value: "{{ .IPv6NodeCidrMaskSize }}"
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
             # Set Felix endpoint to host default action to ACCEPT.
@@ -4065,7 +4073,7 @@ spec:
               value: "ACCEPT"
             # Disable IPv6 on Kubernetes.
             - name: FELIX_IPV6SUPPORT
-              value: "false"
+              value: "true"
             - name: FELIX_HEALTHENABLED
               value: "true"
           securityContext:
