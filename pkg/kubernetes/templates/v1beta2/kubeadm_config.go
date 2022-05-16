@@ -87,7 +87,6 @@ apiServer:
     {{- end }}
 controllerManager:
   extraArgs:
-    node-cidr-mask-size: "{{ .NodeCidrMaskSize }}"
 {{ toYaml .ControllerManagerArgs | indent 4 }}
   extraVolumes:
   - name: host-time
