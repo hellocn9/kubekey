@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/kubesphere/kubekey/pkg/core/logger"
 	"github.com/pkg/errors"
+	"math/big"
 	"net"
 	"strconv"
 	"strings"
@@ -124,6 +125,15 @@ func GetAvailableIPv6(ipAndMask string) []string {
 	fmt.Println(ipnet)
 	availableIPs = append(availableIPs, firstIP.String())
 	return availableIPs
+}
+
+func Ipv6ToInt(ip net.IP) (*big.Int, error) {
+	if ip == nil {
+		return nil, errors.New("invalid ipv6")
+	}
+	IPv6Int := big.NewInt(0)
+	IPv6Int.SetBytes(ip)
+	return IPv6Int, nil
 }
 
 func IPAddressToCIDR(ipAddress string) string {

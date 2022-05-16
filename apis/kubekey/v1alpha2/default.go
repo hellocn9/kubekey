@@ -57,7 +57,7 @@ const (
 	DefaultHarborVersion        = "v2.4.1"
 	DefaultMaxPods              = 110
 	DefaultNodeCidrMaskSize     = 24
-	DefaultIPv6NodeCidrMaskSize = 56
+	DefaultIPv6NodeCidrMaskSize = 64
 	DefaultIPIPMode             = "Always"
 	DefaultVXLANMode            = "Never"
 	DefaultVethMTU              = 1440
