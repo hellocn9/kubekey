@@ -53,7 +53,7 @@ func (p *PullImage) Execute(runtime connector.Runtime) error {
 		GetImage(runtime, p.KubeConf, "calico-kube-controllers"),
 		GetImage(runtime, p.KubeConf, "calico-cni"),
 		GetImage(runtime, p.KubeConf, "calico-node"),
-		GetImage(runtime, p.KubeConf, "calico-flexvol"),
+		//GetImage(runtime, p.KubeConf, "calico-flexvol"),
 		GetImage(runtime, p.KubeConf, "cilium"),
 		GetImage(runtime, p.KubeConf, "operator-generic"),
 		GetImage(runtime, p.KubeConf, "flannel"),
