@@ -4308,8 +4308,8 @@ spec:
         # This container performs upgrade from host-local IPAM to calico-ipam.
         # It can be deleted if this is a fresh installation, or if you have already
         # upgraded to use calico-ipam.
-        - name: {{ .CalicoCniImage }}
-          image: docker.io/calico/cni:v3.23.0
+        - name: upgrade-ipam
+          image: {{ .CalicoCniImage }}
           command: ["/opt/cni/bin/calico-ipam", "-upgrade"]
           envFrom:
           - configMapRef:
