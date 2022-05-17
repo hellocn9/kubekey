@@ -18,7 +18,6 @@ package util
 
 import (
 	"encoding/binary"
-	"fmt"
 	"github.com/kubesphere/kubekey/pkg/core/logger"
 	"github.com/pkg/errors"
 	"math/big"
@@ -44,7 +43,6 @@ func ParseIp(ip string) []string {
 	} else {
 		availableIPs = append(availableIPs, ip)
 	}
-	fmt.Println(availableIPs)
 	return availableIPs
 }
 
@@ -65,7 +63,6 @@ func ParseIpv6(ip string) []string {
 	} else {
 		availableIPs = append(availableIPs, ip)
 	}
-	fmt.Println(availableIPs)
 	return availableIPs
 }
 
@@ -118,11 +115,9 @@ func GetAvailableIPv6(ipAndMask string) []string {
 	ipAndMask = strings.TrimSpace(ipAndMask)
 	ipAndMask = IPAddressToCIDR(ipAndMask)
 	_, ipnet, _ := net.ParseCIDR(ipAndMask)
-	fmt.Println(ipnet)
 
 	firstIP, _ := networkRangeIpv6(ipnet)
 	firstIP[len(firstIP)-1] = 1
-	fmt.Println(ipnet)
 	availableIPs = append(availableIPs, firstIP.String())
 	return availableIPs
 }
