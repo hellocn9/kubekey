@@ -69,6 +69,8 @@ type Host interface {
 	SetName(name string)
 	GetAddress() string
 	SetAddress(str string)
+	GetIPv6Address() string
+	SetIPv6Address(str string)
 	GetInternalAddress() string
 	SetInternalAddress(str string)
 	GetPort() int

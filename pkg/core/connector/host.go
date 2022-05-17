@@ -23,6 +23,7 @@ import (
 type BaseHost struct {
 	Name            string `yaml:"name,omitempty" json:"name,omitempty"`
 	Address         string `yaml:"address,omitempty" json:"address,omitempty"`
+	IPv6Address     string `yaml:"IPv6Address,omitempty" json:"IPv6Address,omitempty"`
 	InternalAddress string `yaml:"internalAddress,omitempty" json:"internalAddress,omitempty"`
 	Port            int    `yaml:"port,omitempty" json:"port,omitempty"`
 	User            string `yaml:"user,omitempty" json:"user,omitempty"`
@@ -59,6 +60,14 @@ func (b *BaseHost) GetAddress() string {
 
 func (b *BaseHost) SetAddress(str string) {
 	b.Address = str
+}
+
+func (b *BaseHost) GetIPv6Address() string {
+	return b.IPv6Address
+}
+
+func (b *BaseHost) SetIPv6Address(str string) {
+	b.IPv6Address = str
 }
 
 func (b *BaseHost) GetInternalAddress() string {

@@ -143,6 +143,7 @@ func init() {
 type HostCfg struct {
 	Name            string `yaml:"name,omitempty" json:"name,omitempty"`
 	Address         string `yaml:"address,omitempty" json:"address,omitempty"`
+	IPv6Address     string `yaml:"ipv6Address,omitempty" json:"ipv6Address,omitempty"`
 	InternalAddress string `yaml:"internalAddress,omitempty" json:"internalAddress,omitempty"`
 	Port            int    `yaml:"port,omitempty" json:"port,omitempty"`
 	User            string `yaml:"user,omitempty" json:"user,omitempty"`
@@ -201,6 +202,8 @@ func (cfg *ClusterSpec) GenerateCertSANs() []string {
 		extraCertSANs = append(extraCertSANs, fmt.Sprintf("%s.%s", host.Name, cfg.Kubernetes.DNSDomain))
 		if host.Address != cfg.ControlPlaneEndpoint.Address {
 			extraCertSANs = append(extraCertSANs, host.Address)
+			extraCertSANs = append(extraCertSANs, host.IPv6Address)
+
 		}
 		if host.InternalAddress != host.Address && host.InternalAddress != cfg.ControlPlaneEndpoint.Address {
 			extraCertSANs = append(extraCertSANs, host.InternalAddress)
@@ -261,6 +264,7 @@ func toHosts(cfg HostCfg) *KubeHost {
 	host := connector.NewHost()
 	host.Name = cfg.Name
 	host.Address = cfg.Address
+	host.IPv6Address = cfg.IPv6Address
 	host.InternalAddress = cfg.InternalAddress
 	host.Port = cfg.Port
 	host.User = cfg.User
