@@ -1,0 +1,20 @@
+FROM openeuler/openeuler:20.03-lts-sp2 as openeuler2003
+ARG TARGETARCH
+ENV OS=openEuler
+ENV OS_VERSION=20.03
+ARG BUILD_TOOLS="createrepo genisoimage findutils-2:4.8.0-4.oe2203sp1.x86_64 dnf-plugins-core"
+ARG DIR=${OS}${OS_VERSION}-${TARGETARCH}-rpms
+
+RUN yum makecache && yum install -q -y ${BUILD_TOOLS}
+
+WORKDIR package
+COPY packages.yaml .
+COPY --from=mikefarah/yq:4.11.1 /usr/bin/yq /usr/bin/yq
+RUN yq eval ".common[],.rpms[],.openEuler[],.openEuler2003[]" packages.yaml > packages.list
+
+RUN sort -u packages.list | xargs repotrack --destdir ${DIR} \
+    && createrepo -d ${DIR} \
+    && mkisofs -r -o ${DIR}.iso ${DIR}
+
+FROM scratch
+COPY --from=openeuler2003 /package/*.iso /
